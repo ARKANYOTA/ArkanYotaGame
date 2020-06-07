@@ -1,8 +1,8 @@
 from sys import platform
 from os import system
-from Var import *
-from Loc import *
-from Get import getkey
+from ArkanYotaGame.Var import *
+from ArkanYotaGame.Loc import *
+from ArkanYotaGame.Get import getkey
 if __name__  ==  "__main__":
     if platform[:3] == 'win':
         print("Win")
