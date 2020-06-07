@@ -5,5 +5,7 @@
 - soit:  ```pip3 install ArkanYotaGame```    
 ###### Pour lancer le jeu:   
 - pour github: launcer ArkanYotaGame/__init__.py   
-- pour pip: ```python import ArkanYotaGame```   
+- pour pip: ```python
+import ArkanYotaGame
+```   
 
