@@ -7,3 +7,5 @@
 - pour github: launcer ArkanYotaGameCmd/Index.py   
 - pour pip: ```import ArkanYotaGame```    
 
+### Info
+Plus d'infomation sur https://github.com/ARKANYOTA/ArkanYotaGameCmd
