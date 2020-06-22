@@ -1,4 +1,4 @@
-from sys import platform, stdin
+from sys import platform
 if platform[:3] == 'win':
     __keydict = {
         0x3b : 'f1',
@@ -105,7 +105,7 @@ if platform[:3] == 'win':
 elif platform[:3] == 'lin' or platform[:3] == 'dar':
     import tty
     import termios
-    
+    from sys import stdin
     def getch():
         fd = stdin.fileno()
         old_settings = termios.tcgetattr(fd)

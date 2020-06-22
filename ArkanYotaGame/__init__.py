@@ -4,29 +4,25 @@ from ArkanYotaGame.Get import getkey
 
 from sys import platform
 from os import system
-if platform[:3] == 'win':
-    print("Win")
-elif platform[:3] == 'lin' or platform[:3] == 'dar':
-    print("Lin")
-money = 1000
-CtrlC = lambda key: exit() if key == '\x03' else None
+from time import sleep
+
+#Mettre l'invite de commande à vide
 system("mode con cols=128 lines=32")
 print("\033[?25l")
 
-invsee = "e"
+#Deffinition des def qui doivent avoir des variable internes
 def setmapdecor():
-    cls()
-    global mapx, mapy
-    for i in range(len(loc[mapx][mapy])): # 32 y
-        print()
-        for l in range(len(loc[mapx][mapy][i])): # 128 x
-            a = loc[mapx][mapy][i][l]
-            print((lambda: "\033[{0};{1}H".format(i+1, l+1)+" " if a=="0" else "")(),end="")
-            print((lambda: "\033[{0};{1}H".format(i+1, l+1)+"█" if a=="1"else "")(),end="")
-            print((lambda: "\033[{0};{1}H".format(i+1, l+1)+"V" if a=="!"else "")(),end="")
-            print((lambda: "\033[{0};{1}H".format(i+1, l+1)+"\033[32m█\033[0m" if a=="a"else "")(),end="")
-            print((lambda: "\033[{0};{1}H".format(i+1, l+1)+"X" if (a not in "01a!") else "")(),end="")
+    VarSetMapDecor(mapx, mapy, loc)
 
+def message(msg):
+    VarMessage(msg, x, y)
+    setmapdecor()
+
+def inventory():
+    VarInventory(x,y)
+    setmapdecor()
+
+#Commencement de la boucle
 while True:
     print("\033[1;1H\033[2J", end="")
     PrintEcrandacceuil()
@@ -58,40 +54,60 @@ while True:
         print()
         key = getkey()
         CtrlC(key)
-        if key == up:
-            if y<2: aay, ay, y = 33, 33, 33; mapy -=1; setmapdecor()
+        if key == openmsg:
+            message("$print('Yo')¶HELLOµBonjoiurJeµPooooooooµa¶Its not trueµbeacause¶Its false")
+        elif key == invsee:
+            inventory()
+        elif key == up:
+            if y<2: aay, ay, y = 32, 32, 32; mapy -=1; setmapdecor()
             else:
-                if loc[mapx][mapy][y-2][x-1] in fullblock: pass
-                else: aax, aay, ax , ay = ax, ay, x, y; y -= 1
+                if loc[mapx][mapy][y-2][x-1] in fullblock:
+                    pass
+                else:
+                    aax, aay, ax , ay = ax, ay, x, y; y -= 1
             direction = "up"
             
         elif key == down:
-            if y>31: aay, ay, y = 0, 0, 0; mapy +=1; setmapdecor()
+            if y>31: aay, ay, y = 1, 1, 1; mapy +=1; setmapdecor()
             else:
-                if loc[mapx][mapy][y][x-1] in fullblock: pass
-                else: aax, aay, ax , ay = ax, ay, x, y; y += 1
+                if loc[mapx][mapy][y][x-1] in fullblock:
+                    pass
+                else:
+                    aax, aay, ax , ay = ax, ay, x, y; y += 1
             direction = "down"
             
         elif key == left:
             if x<2: aax, ax, x = 128, 128, 128; mapx -=1; setmapdecor()
             else:
-                if loc[mapx][mapy][y-1][x-2] in fullblock: pass
-                else: aax, aay, ax , ay = ax, ay, x, y; x -= 1
+                if loc[mapx][mapy][y-1][x-2] in fullblock:
+                    pass
+                else:
+                    aax, aay, ax , ay = ax, ay, x, y; x -= 1
             direction = "left"
 
         elif key == right:
             if x>127: aax, ax, x = 1, 1, 1; mapx +=1; setmapdecor()
             else:
-                if loc[mapx][mapy][y-1][x] in fullblock: pass
-                else: aax, aay, ax , ay = ax, ay, x, y; x += 1
+                if loc[mapx][mapy][y-1][x] in fullblock:
+                    pass
+                else:
+                    aax, aay, ax , ay = ax, ay, x, y; x += 1
             direction = "right"
 
         elif key == enter:
-            if (loc[mapx][mapy][y-1][x] in InteractBlock and direction=="right")or \
-               (loc[mapx][mapy][y-1][x-2] in InteractBlock and direction=="left") or\
-               (loc[mapx][mapy][y-2][x-1] in InteractBlock and direction=="up") or\
-               (loc[mapx][mapy][y][x-1] in InteractBlock and direction=="down"):
-                print("\033[10;10H"+direction+"   ")
+            if (loc[mapx][mapy][y-1][x] in InteractBlock and direction=="right"):
+                if str(loc[mapx][mapy][y-1][x]) in dicomsg:
+                    message(dicomsg[str(loc[mapx][mapy][y-1][x])])
+            elif (loc[mapx][mapy][y-1][x-2] in InteractBlock and direction=="left"):
+                if str(loc[mapx][mapy][y-1][x-2]) in dicomsg:
+                    message(dicomsg[str(loc[mapx][mapy][y-1][x-2])])
+            elif (loc[mapx][mapy][y-2][x-1] in InteractBlock and direction=="up"):
+                if str(loc[mapx][mapy][y-2][x-1]) in dicomsg:
+                    message(dicomsg[str(loc[mapx][mapy][y-2][x-1])])
+            elif (loc[mapx][mapy][y][x-1] in InteractBlock and direction=="down"):
+                if str(loc[mapx][mapy][y][x-1]) in dicomsg:
+                    message(dicomsg[str(loc[mapx][mapy][y][x-1])])
+                
         elif key == f3:
             F3Mode = not F3Mode
             setmapdecor()
@@ -116,11 +132,14 @@ while True:
                 OptionSelectOption, nbptionoptions = 0, 11
                 esckey = getkey()
                 CtrlC(esckey)
-                if esckey == escap: EnterWhile=False
+                if esckey == escap:
+                    EnterWhile=False
                 
-                elif esckey == down: EnterSelectOption +=1
+                elif esckey == down:
+                    EnterSelectOption +=1
                 
-                elif esckey == up: EnterSelectOption-=1
+                elif esckey == up:
+                    EnterSelectOption-=1
                 
                 elif esckey == enter: 
                     selectapparencep = True
@@ -131,11 +150,15 @@ while True:
                             OptionofTyping(OptionSelectOption, nbptionoptions)
                             optkey = getkey()
                             CtrlC(optkey)
-                            if optkey==escap: OptionWhile = False; EnterWhile = False
+                            if optkey==escap:
+                                OptionWhile = False;
+                                EnterWhile = False
                             
-                            elif optkey == down: OptionSelectOption +=1
+                            elif optkey == down:
+                                OptionSelectOption +=1
                             
-                            elif optkey == up: OptionSelectOption-=1
+                            elif optkey == up:
+                                OptionSelectOption-=1
                             
                             elif optkey==delete: 
                                 setmapdecor()
@@ -159,7 +182,6 @@ while True:
                                         print((lambda: "\033[13;7H \033[31m enter  \033[0m" if v==5 else "\033[13;7H enter   ")() + str(enter.encode("UTF-8")) + " "*30)
                                         print((lambda: "\033[14;7H \033[31m delete  \033[0m" if v==6 else "\033[14;7H delete    ")() + str(delete.encode("UTF-8")) + " "*30)
                                         print((lambda: "\033[15;7H \033[31m f3  \033[0m" if v==7 else "\033[15;7H f3    ")() + str(f3.encode("UTF-8")) + " "*30)
-
                                         print((lambda: "\033[16;7H \033[31m RESET  \033[0m" if v==8 else "\033[16;7H RESET    ")())
                                         print((lambda: "\033[17;7H \033[31m SAVE  \033[0m" if v==9 else "\033[17;7H SAVE    ")())
 
@@ -174,7 +196,6 @@ while True:
                                             AffichefenetreOptions()
                                             ControlsWhile = False
                                         elif ctrlkey==enter:
-                                            
                                             if controlnombre%nbopt==0:
                                                 controlgetkey = getkey()
                                                 CtrlC(controlgetkey)
@@ -257,5 +278,3 @@ while True:
         
         print("\033[{1};{0}H".format(ax,ay)+apparencet,end="")
         print("\033[{1};{0}H ".format(aax,aay),end="")
-    
-
